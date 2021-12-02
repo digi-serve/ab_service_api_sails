@@ -12,8 +12,10 @@
 
 FROM digiserve/service-cli:develop
 
-RUN git clone --recursive https://github.com/digi-serve/ab_service_api_sails.git app && cd app && git checkout develop && npm install
+COPY . /app
 
 WORKDIR /app
+
+RUN npm install
 
 CMD ["node", "--inspect=0.0.0.0:9229", "app_waitMysql.js"]
