@@ -1,0 +1,41 @@
+name: E2E Tests
+on:
+   # Run on any commit to the #master branch
+   push:
+      branches: [master, develop]
+   # Run on pull requests into the #master branch
+   pull_request:
+      branches: [master, develop]
+   # Allows user to trigger the workflow from GitHub's web UI
+   workflow_dispatch:
+
+jobs:
+   cypress-test:
+      name: Run Tests
+      runs-on: ubuntu-latest
+      steps:
+         - name: Install AppBuilder
+           run: docker swarm init && npx digi-serve/ab-cli install ab --stack=ab --port=8080 --db.expose=false --db.password=root --db.encryption=false --tag=develop --nginx.enable=true --ssl.none --bot.enable=false --smtp.enable=false --tenant.username=admin --tenant.password=admin --tenant.email=neo@thematrix.com
+
+         - name: Check out api_sails
+           uses: actions/checkout@v2
+           with:
+              path: api_sails
+
+         - name: Build ab-api-sails docker image
+           run: docker build -t ab-api-sails:test .
+           working-directory: ./api_sails
+
+         - name: Deploy Stack
+           run: docker stack deploy -c docker-compose.yml -c docker-compose.override.yml -c ./test/setup/ci-test.overide.yml -c ../api_sails/ci-test.override.yml ab
+           working-directory: ./ab
+
+         - name: Run Cypress Tests
+           uses: cypress-io/github-action@v2
+           with:
+              working-directory: ./ab
+              project: ./test/e2e
+              config: baseUrl=http://localhost:8080,responseTimeout=60000
+              wait-on: "http://localhost:8080"
+              wait-on-timeout: 300
+              env: stack=ab

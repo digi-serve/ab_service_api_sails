@@ -1,0 +1,5 @@
+version: "3.2"
+# Use a locally built image not the dockerhub version
+services:
+   api_sails:
+      image: ab-api-sails:test
