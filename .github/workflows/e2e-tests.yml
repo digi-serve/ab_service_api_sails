@@ -22,6 +22,12 @@ jobs:
            with:
               path: api_sails
 
+         - name: Check out kitchen-sink tests
+           uses: actions/checkout@v2
+           with:
+              repository: digi-serve/kitchensink_app
+              path: ab/test/e2e/cypress/integration/kitchensink_app
+
          - name: Build ab-api-sails docker image
            run: docker build -t ab-api-sails:test .
            working-directory: ./api_sails
