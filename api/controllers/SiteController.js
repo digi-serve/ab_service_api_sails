@@ -123,7 +123,10 @@ module.exports = {
       // The labels used by the web platform to display.  They will be in the
       // language of the user that is running this request.
 
-      var configSite = null;
+      var configSite = {
+         relay: sails.config.relay?.enable ?? false,
+      };
+      console.log("configSite", configSite);
       // {obj} configSite
       // The information details for this site, used by the WEB platform to
       // process it's operation:
@@ -210,9 +213,7 @@ module.exports = {
                   {},
                   (err, results) => {
                      if (results) {
-                        configSite = {
-                           tenants: results,
-                        };
+                        configSite.tenants = results;
                      }
                      done(err);
                   }
