@@ -79,6 +79,7 @@ module.exports = function (req, res) {
                   // create a new job for the service
                   let jobData = {
                      json,
+                     longRequest: true, // Tell cote to wait longer as import takes time.
                   };
 
                   // pass the request off to the uService:
