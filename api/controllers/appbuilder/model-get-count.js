@@ -85,8 +85,3 @@ module.exports = function (req, res) {
       res.ab.success({ count: results.total_count });
    });
 };
-
-      }
-      res.ab.success({ count: results.total_count });
-   });
-};
