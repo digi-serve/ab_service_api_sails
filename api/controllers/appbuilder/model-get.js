@@ -77,6 +77,11 @@ module.exports = function (req, res) {
          const roomKey = `${jobData.objectID}-${role.uuid}`;
          sails.sockets.join(req, req.ab.socketKey(roomKey));
       });
+      // Also join room for the current user
+      const userRoom = req.ab.socketKey(
+         `${jobData.objectID}-${req.ab.user.username}`
+      );
+      sails.sockets.join(req, userRoom);
    }
 
    // pass the request off to the uService:
