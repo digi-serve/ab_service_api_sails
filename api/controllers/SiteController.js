@@ -178,12 +178,12 @@ module.exports = {
 
                // simplify the user data:
                let userSimple = {};
-               Object.keys(req.ab.user).forEach((k)=>{
+               Object.keys(req.ab.user).forEach((k) => {
                   if (k.indexOf("__relation") > -1) return;
                   if (k.indexOf("AB") == 0) return;
                   if (k.indexOf("SITE") == 0) return;
                   userSimple[k] = req.ab.user[k];
-               })
+               });
 
                var jobData = {
                   user: userSimple,
@@ -216,12 +216,9 @@ module.exports = {
 
             (done) => {
                // default to "en" labels
-               var langCode = "en";
-               if (req.ab.user) {
-                  langCode = req.ab.user.languageCode;
-               }
+               const langCode = req.ab.user?.languageCode ?? "en";
 
-               var jobData = {
+               const jobData = {
                   languageCode: langCode,
                };
                req.ab.log("label job data:", jobData);
