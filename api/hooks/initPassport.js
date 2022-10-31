@@ -23,7 +23,11 @@ module.exports = function (sails) {
             // Okta callback route.
             // User is sent here after signing on from the Okta site.
             "GET /authorization-code/callback": (req, res) => {
-               const callbackURL = `${req.baseUrl}/authorization-code/callback`;
+               // if baseurl is api_sails replace with x-fowarded-host
+               const baseUrl = /api_sails/.test(req.baseUrl)
+                  ? `https://${req.headers["x-forwarded-host"]}`
+                  : req.baseUrl;
+               const callbackURL = `${baseUrl}/authorization-code/callback`;
                // This needs to exactly match the callbackURL sent to okta.
                // Note: req.baseUrl does not include the port number, so you'll
                // need to add for local testing.
