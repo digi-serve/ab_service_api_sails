@@ -14,8 +14,9 @@ var inputParams = {
    // sort: specify the fields used for sorting
    //    [ { key: field.id, dir:["ASC", "DESC"]}, ... ]
 
-   populate: { boolean: true, optional: true },
+   populate: { optional: true },
    // populate: return values with their connections populated?
+   // can be boolean or array
 
    //// Paging Entries: skip, offset, limit
    skip: { number: { integer: true }, optional: true },
