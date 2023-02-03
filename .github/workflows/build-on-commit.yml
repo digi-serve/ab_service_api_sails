@@ -22,6 +22,10 @@ jobs:
           [[ "${{ github.repository }}" =~ $REGEX ]]
           DOCKER_HUB_REPO=ab-${BASH_REMATCH[1]/_/-}
           echo "::set-output name=docker_hub_repo::$DOCKER_HUB_REPO"
+          
+      - name: Get commit sha
+        id: sha
+        run: echo "short=${{ github.sha::7 }} >> $GITHUB_OUTPUT"
 
       - name: Check out the git repo
         uses: actions/checkout@v2
@@ -40,3 +44,4 @@ jobs:
           build-args: BRANCH=${{ steps.branch.outputs.branch }}
           tags: |
             digiserve/${{ steps.repo_name.outputs.docker_hub_repo }}:${{ steps.branch.outputs.branch }}
+            digiserve/${{ steps.repo_name.outputs.docker_hub_repo }}:${{ steps.sha.outputs.short }}
