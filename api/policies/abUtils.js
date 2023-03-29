@@ -4,7 +4,7 @@
  * in our policies and api end points.
  */
 
-var AB = require("ab-utils");
+var AB = require("@digiserve/ab-utils");
 
 //
 // apiResponder

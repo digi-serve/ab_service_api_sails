@@ -22,7 +22,7 @@ const authLocal = require(__dirname + "/../lib/authUserLocal.js");
 const authOkta = require(__dirname + "/../lib/authUserOkta.js");
 const authToken = require(__dirname + "/../lib/authUserToken.js");
 const authLogger = require(__dirname + "/../lib/authLogger.js");
-const AB = require("ab-utils");
+const AB = require("@digiserve/ab-utils");
 const passport = require("passport");
 
 // B. Initializing during Sails.js bootstrap

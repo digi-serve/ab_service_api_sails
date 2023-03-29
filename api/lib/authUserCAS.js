@@ -25,7 +25,7 @@
  */
 const url = require("url");
 const async = require("async");
-const AB = require("ab-utils");
+const AB = require("@digiserve/ab-utils");
 const passport = require("passport");
 const CasStrategy = require("passport-cas2").Strategy;
 const authLogger = require("./authLogger.js");

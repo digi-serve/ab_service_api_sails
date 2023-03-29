@@ -1,13 +1,8 @@
 name: E2E Tests
 on:
-  # Run on any commit to the #master branch
-  push:
-    branches: [master, develop]
-  # Run on pull requests into the #master branch
-  pull_request:
-    branches: [master, develop]
+  workflow_call:
 jobs:
-  cypress-test:
+  e2e-tests:
     name: Run Tests
     runs-on: ubuntu-latest
     env:
@@ -18,7 +13,6 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v3
         with:
-          submodules: recursive
           path: ab_service_api_sails
       - name: Install AppBuilder
         uses: digi-serve/ab-install-action@v1
@@ -27,6 +21,10 @@ jobs:
         with:
           repository: digi-serve/kitchensink_app
           path: AppBuilder/test/e2e/cypress/e2e/kitchensink_app
+      - run: npm install pm2@latest -g
+      - name: Save Logs
+        run: pm2 start ./logs.js -- --toFile logs/ABServices.log
+        working-directory: ./ab
       - name: Wait for AB
         uses: ifaxity/wait-on-action@v1
         with:
@@ -41,3 +39,9 @@ jobs:
         with:
           name: cypress-screenshots
           path: ./AppBuilder/test/e2e/cypress/screenshots
+      - name: Save Service Logs
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: ABServices.log
+          path: ./ab/logs/ABServices.log
