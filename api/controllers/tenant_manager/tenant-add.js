@@ -1,10 +1,19 @@
 /**
  * tenant_manager/tenant-add.js
- *
- *
- * url:     post /tenant/add
- * header:  X-CSRF-Token : [token]
- * params:
+ */
+
+/**
+ * @api {POST} /tenant/add Add
+ * @apiPermission User
+ * @apiGroup Tenant
+ * @apiBody {string} key Short identifier for the tenant (no spaces)
+ * @apiBody {string} title Full Tenant name
+ * @apiBody {string="login", "okta", "cas"} authType Authentication method to use for the tenant's users
+ * @apiBody {string} username Username for the new tenant's admin user (will be created)
+ * @apiBody {string} password Password for the new admin user
+ * @apiBody {string} email Email of the new admin user
+ * @apiBody {string} url The tenants domain, must be a valid uri
+ * @apiUse successRes
  */
 
 var inputParams = {

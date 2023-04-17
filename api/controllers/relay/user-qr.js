@@ -2,10 +2,13 @@
  * relay/user-qr.js
  *
  *
- * url:     get /relay/user-qr
- * header:  X-CSRF-Token : [token]
- * params:
- */
+ /** 
+  * @api {GET} /relay/user-qr QR Code
+  * @apiGroup Relay
+  * @apiDescription Get a QR code to register the PWA
+  * @apiPermission User
+  * @apiSuccess (200) {image/png} image QR Code
+  */
 
 var inputParams = {};
 

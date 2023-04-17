@@ -2,9 +2,11 @@
  * definition_manager/definition-delete.js
  *
  *
- * url:     delete /definition/:ID
- * header:  X-CSRF-Token : [token]
- * params:
+ * @api {delete} /definition/:ID Delete
+ * @apiGroup Definition
+ * @apiPermission Builder
+ * @apiUse defID
+ * @apiUse successRes
  */
 
 var inputParams = {

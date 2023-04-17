@@ -1,10 +1,12 @@
 /**
  * definition_manager/definition-update.js
  *
- *
- * url:     put /definition/:id
- * header:  X-CSRF-Token : [token]
- * params:
+ * @api {put} /definition/:id Update
+ * @apiGroup Definition
+ * @apiPermission Builder
+ * @apiUse defID
+ * @apiBody {any} ...params any values to update in the definition
+ * @apiUse successRes
  */
 
 var inputParams = {

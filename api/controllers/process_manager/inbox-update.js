@@ -1,10 +1,13 @@
 /**
  * process_manager/inbox-update.js
+ * @apiDescription Complete an proces task from the inbox
  *
- *
- * url:     put /process/inbox/:ID
- * header:  X-CSRF-Token : [token]
- * params:
+ * @api {put} /process/inbox/:ID Inbox Update
+ * @apiGroup Process
+ * @apiPermission User
+ * @apiParam {string} ID id of the inbox task
+ * @apiBody {string} response response to send to the process
+ * @apiUse successRes
  */
 
 var inputParams = {

@@ -1,10 +1,15 @@
 /**
  * auth/reset-request.js
+ * @apiDescription Request an email to be sent to the user's
+ * address with a link to reset their password.
  *
- *
- * url:     post /auth/login/reset
- * header:  X-CSRF-Token : [token]
- * params:
+ * @api {post} /auth/login/reset Reset Password
+ * @apiGroup Auth
+ * @apiPermission None
+ * @apiUse email
+ * @apiUse tenantO
+ * @apiBody {string} url
+ * @apiUse successRes
  */
 const authLogger = require("../../lib/authLogger.js");
 

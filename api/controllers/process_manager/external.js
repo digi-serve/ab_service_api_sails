@@ -1,10 +1,14 @@
 /**
  * process_manager/external.js
- *
- * url:     post /process/external
- * header:  X-CSRF-Token : [token]
- * return:  {array} [ {rowentry}, ... ]
- * params:
+ * @apiDescription Allows an external approval task to report the task
+ * as done to continue the process.
+ * @api {post} /process/external External Done
+ * @apiGroup Process
+ * @apiPermission User
+ * @apiBody {object} task
+ * @apiBody {string} task.id id of the external approval task instance
+ * @apiBody {object} [data] any data to add to the process context
+ * @apiUse successRes
  */
 var inputParams = {
    task: { object: true, required: true },

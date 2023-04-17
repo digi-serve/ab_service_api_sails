@@ -1,12 +1,14 @@
 /**
- * auth/login.js
- * Process the provided login email/password and establish a user session
- * if valid.
+ * auth/logout.js
  *
- * url:     post /auth/login
- * header:  X-CSRF-Token : [token]
- * return:  { user }
- * params:
+ * @api {post} /auth/logout Logout
+ * @apiGroup Auth
+ * @apiPermission None
+ * @apiDescription Clears the session and redirects the user
+ * @apiSuccess (200 CAS) {object} data
+ * @apiSuccess (200 CAS) {string} data.redirect if using CAS Authentication we send the redirect url for logout
+ * @apiSuccess (200 CAS) {string} status `"success"`
+ * @apiUse successRes
  */
 // var inputParams = {
 //    email: { string: { email: true }, required: true },

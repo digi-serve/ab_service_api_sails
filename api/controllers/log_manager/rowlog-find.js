@@ -1,10 +1,20 @@
 /**
  * log_manager/rowlog-find.js
- * Request a series of log entries for the data managed by a specific ABObject.
+ * @apiDescription Request a series of log entries for the data managed by a specific ABObject.
  *
- * url:     get /app_builder/object/:objID/track
- * header:  X-CSRF-Token : [token]
- * params:
+ * @api {get} /app_builder/object/:objID/track Find
+ * @apiGroup Log
+ * @apiPermission Builder
+ * @apiUse objID
+ * @apiQuery {string} [rowId] The specific {row} entry we are looking for
+ * @apiQuery {string = insert, update, delete } [levelName] the type of entries
+ * @apiQuery {string} [username] entries by a specific username
+ * @apiQuery {date} [startDate] entries between a specific time frame
+ * @apiQuery {date} [endDate] entries between a specific time frame
+ * @apiQuery {number} [start] paging option
+ * @apiQuery {number} [limit] paging option
+ * @apiUse successRes
+ * @apiSuccess (200) {object[]} data log enteries
  */
 
 var inputParams = {

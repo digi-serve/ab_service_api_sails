@@ -7,6 +7,25 @@
  * return:  {array} [ {rowentry}, ... ]
  * params:
  */
+/**
+ * @api {get} /app_builder/model/:objID Model Find
+ * @apiGroup AppBuilder
+ * @apiPermission User
+ * @apiDescription Perform a Find operation on the data managed by a specified ABObject.
+ * @apiParam {string} objID The uuid of the ABObject
+ * @apiQuery {object} [where] filter conditions
+ * @apiQuery {array} [sort] specify the fields used for sorting `[ { key: field.id, dir:["ASC", "DESC"]}, ... ]`
+ * @apiQuery {boolean|array} [populate] return values with their connections populated?
+ * @apiQuery {number} [offset] the number of entries to skip.
+ * @apiQuery {number} [limit] the number of return.
+ * @apiUse successRes
+ * @apiSuccess (200) {object} data
+ * @apiSuccess (200) {array} data.data all the matching rows
+ * @apiSuccess (200) {number} data.total_count count of the returned rows (for pagination)
+ * @apiSuccess (200) {number} data.pos starting position (for pagination)
+ * @apiSuccess (200) {number} data.offset
+ * @apiSuccess (200) {number} data.limit
+ */
 var inputParams = {
    objID: { string: true, required: true },
    where: { object: true, optional: true },
@@ -86,23 +105,28 @@ module.exports = function (req, res) {
    }
 
    const options = {};
-   // if populate == true, then this might take longer, so mark this as a 
+   // if populate == true, then this might take longer, so mark this as a
    // longRequest
-   // NOTE: only do this on a generic populate = true.  those can end up 
-   // gathering ALOT of data.  if this is a limited populate = [ 'field', ... ] 
+   // NOTE: only do this on a generic populate = true.  those can end up
+   // gathering ALOT of data.  if this is a limited populate = [ 'field', ... ]
    // this is probably not necessary
    if (jobData.cond.populate === true || jobData.cond.populate === "true") {
       options.longRequest = true;
    }
 
    // pass the request off to the uService:
-   req.ab.serviceRequest("appbuilder.model-get", jobData, options, (err, results) => {
-      if (err) {
-         req.ab.log("api_sails:model-get:error:", err);
-         res.ab.error(err);
-         return;
+   req.ab.serviceRequest(
+      "appbuilder.model-get",
+      jobData,
+      options,
+      (err, results) => {
+         if (err) {
+            req.ab.log("api_sails:model-get:error:", err);
+            res.ab.error(err);
+            return;
+         }
+         // req.ab.log(JSON.stringify(results));
+         res.ab.success(results);
       }
-      // req.ab.log(JSON.stringify(results));
-      res.ab.success(results);
-   });
+   );
 };

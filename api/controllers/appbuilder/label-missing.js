@@ -6,7 +6,16 @@
  * header:  X-CSRF-Token : [token]
  * params:
  */
-
+/**
+ * @api {post} /multilingual/label-missing Missing Label
+ * @apiGroup Multilingual
+ * @apiPermission User
+ * @apiDescription report a missing label to add to the translations
+ * @apiBody {string} labels JSON string that parses to an array of objects with keys, `key` and `altText`
+ * @apiUse successRes
+ * @apiParamExample {json} Labels
+   { "labels": "[{\"key\":\"example\", \"altText\": \"example\"}]" }
+ */
 var inputParams = {
    /*    "email": { string:{ email:true }, required:true }   */
    labels: {

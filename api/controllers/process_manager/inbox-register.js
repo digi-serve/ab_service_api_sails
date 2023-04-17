@@ -1,18 +1,13 @@
 /**
  * process_manager/inbox-register.js
+ * @apiDescription Register for socket updates for realtime inbox updates
  *
- *
- * url:     post /process/inbox/register
- * header:  X-CSRF-Token : [token]
- * params:
+ * @api {post} /process/inbox/register Inbox Register
+ * @apiGroup Process
+ * @apiPermission User
+ * @apiUse successRes
+ * @apiSuccess (200) {string} data "ready" or "sockets not enabled, so no real time updates."
  */
-
-var inputParams = {
-   /*    "email": { string:{ email: { allowUnicode: true }}, required:true }   */
-   /*                -> NOTE: put .string  before .required                    */
-   /*    "param": { required: true } // NOTE: param Joi.any().required();      */
-   /*    "param": { optional: true } // NOTE: param Joi.any().optional();      */
-};
 
 // make sure our BasePath is created:
 module.exports = function (req, res) {

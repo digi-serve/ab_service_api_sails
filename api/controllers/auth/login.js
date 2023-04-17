@@ -1,12 +1,17 @@
 /**
  * auth/login.js
- * Process the provided login email/password and establish a user session
+ * @apiDescription Process the provided login email/password and establish a user session
  * if valid.
  *
- * url:     post /auth/login
- * header:  X-CSRF-Token : [token]
- * return:  { user }
- * params:
+ * @api {post} /auth/login Login
+ * @apiGroup Auth
+ * @apiPermission None
+ * @apiUse email
+ * @apiUse password
+ * @apiUse tenantO
+ * @apiUse successRes
+ * @apiSuccess (200) {object} data
+ * @apiSuccess (200) {object} data.user
  */
 const authLogger = require("../../lib/authLogger.js");
 

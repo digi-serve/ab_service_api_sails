@@ -7,6 +7,17 @@
  * return:  { numRows: {integer} }
  * params:
  */
+/**
+ * @api {delete} /app_builder/model/:objID/:ID Model Delete
+ * @apiGroup AppBuilder
+ * @apiPermission User
+ * @apiDescription Perform a Delete operation on the data managed by a specified ABObject.
+ * @apiParam {string} objID The uuid of the ABObject that the record to delete belongs to
+ * @apiParam {string} ID The uuid of the record to delete
+ * @apiUse successRes
+ * @apiSuccess (200) {object} data
+ * @apiSuccess (200) {number} data.numRows The # of rows effected by our delete operation
+ */
 var inputParams = {
    objID: { string: { uuid: true }, required: true },
    ID: { string: { uuid: true }, required: true },

@@ -1,18 +1,12 @@
 /**
  * definition_manager/register-updates.js
+ * @apidescription Register for socket updates when definitons change
  *
- *
- * url:     post /definition/register
- * header:  X-CSRF-Token : [token]
- * params:
+ * @api {post} /definition/register Register
+ * @apiGroup Definition
+ * @apiPermission Builder
+ * @apiUse successRes
  */
-
-var inputParams = {
-   /*    "email": { string:{ email: { allowUnicode: true }}, required:true }   */
-   /*                -> NOTE: put .string  before .required                    */
-   /*    "param": { required: true } // NOTE: param Joi.any().required();      */
-   /*    "param": { optional: true } // NOTE: param Joi.any().optional();      */
-};
 
 // make sure our BasePath is created:
 module.exports = function (req, res) {

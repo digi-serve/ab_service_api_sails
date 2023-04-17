@@ -1,10 +1,13 @@
 /**
  * definitions/check-update/
+ * @apiDescription Check when the server last updated definitions.
+ * Used for cache busting `/definition/myapps`
  *
- *
- * url:     get /definition/check-update
- * header:  X-CSRF-Token : [token]
- * params:
+ * @api {get} /definition/check-update Check
+ * @apiGroup Definition
+ * @apiPermission none
+ * @apiUse successRes
+ * @apiSuccess (200) {number} data the result of `Date.now()` when definitions were updated
  */
 
 module.exports = function (req, res) {

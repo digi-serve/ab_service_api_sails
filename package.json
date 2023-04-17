@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "@sailshq/eslint": "^4.19.3",
+    "apidoc-markdown": "^7.2.5",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.7.0",
     "eslint-config-prettier": "^8.3.0",
@@ -47,7 +48,8 @@
     "devBuild:darwin:linux": "docker run -it --mount type=bind,source=\"$(pwd)\",target=/app -w /app node npm update",
     "devInstall:darwin:linux": "docker run -it -p 1337:1337 --mount type=bind,source=\"$(pwd)\",target=/app -w /app node bash",
     "devBuild:win32": "docker run -it --mount type=bind,source=%cd%,target=/app -w /app node npm update",
-    "devInstall:win32": "docker run -it -p 1337:1337 --mount type=bind,source=%cd%,target=/app -w /app node bash"
+    "devInstall:win32": "docker run -it -p 1337:1337 --mount type=bind,source=%cd%,target=/app -w /app node bash",
+    "doc": "apidoc-markdown -i api/controllers -o README.md -t README.ejs"
   },
   "main": "app.js",
   "repository": {

@@ -2,9 +2,14 @@
  * definition_manager/tenants-update-application.js
  *
  *
- * url:     post /definition/tenants-update-application
- * header:  X-CSRF-Token : [token]
- * params:
+ * @api {post} /definition/tenants-update-application Update App accross Tenant
+ * @apiGroup Definition
+ * @apiPermission Builder
+ * @apiBody {string} applicationUUID
+ * @apiBody {number=0,1,2} state States { 0: create the file, 1: tranfer data of those keys, 2: done }
+ * @apiBody {date} date
+ * @apiBody {string} [data]
+ * @apiUse successRes
  */
 
 const path = require("path");

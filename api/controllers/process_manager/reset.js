@@ -1,10 +1,15 @@
 /**
  * process_manager/reset.js
+ * @apiDescription send a signal to reset a specific process & task. This will cause that
+ * task to restart and run again.
  *
- * url: PUT /process/reset/:taskID
- * header:  X-CSRF-Token : [token]
- * return:
- * params:
+ * @api {PUT} /process/reset/:taskID Task Reset
+ * @apiGroup Process
+ * @apiPermission User
+ * @apiParam {string} taskID uuid of the process task
+ * @apiBody {string/string[]} instanceID ids of process instances
+ * @apiUse successRes
+ * @apiSuccess (200) {number} data the number of process resets
  */
 var inputParams = {
    instanceID: { required: true },

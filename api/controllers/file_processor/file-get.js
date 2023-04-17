@@ -2,9 +2,11 @@
  * file_processor/file-get.js
  *
  *
- * url:     get /file_processor/file-get
- * header:  X-CSRF-Token : [token]
- * params:
+ * @api {get} /file/:ID Get a File
+ * @apiGroup File
+ * @apiPermission User
+ * @apiParam {string} ID file uuid
+ * @apiSuccess (302) {redirect} url to the file
  */
 
 var inputParams = {

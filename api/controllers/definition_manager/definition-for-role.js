@@ -1,12 +1,11 @@
 /**
  * definitions/for-roles/
  *
- *
- * url:     get /definition/myapps
- * header:  X-CSRF-Token : [token]
- * params:
+ * @api {GET} /definition/myapps User Applications
+ * @apiPermission none
+ * @apiGroup Definition
+ * @apiSuccess (200) {text/javascript} definitions script to add the app defintions
  */
-
 module.exports = function (req, res) {
    // Package the Request and pass it off to the service
    req.ab.log(`definition_manager::definitionsForRoles`);

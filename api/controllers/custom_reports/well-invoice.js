@@ -2,9 +2,9 @@
  * custom_reports/well-invoice.js
  *
  *
- * url:     get /custom_reports/well-invoice
- * header:  X-CSRF-Token : [token]
- * params:
+ * @api {get} /custom_reports/well-invoice Well Invoice
+ * @apiGroup Report
+ * @apiDeprecated use `/report/well-invoice`
  */
 
 var inputParams = {

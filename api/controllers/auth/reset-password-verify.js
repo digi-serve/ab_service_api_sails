@@ -1,10 +1,14 @@
 /**
  * auth/reset-password-verify.js
+ * @apiDescription Authenticate the user with tokens and redirect to
+ * the reset password page, used in the reset password emails
  *
- *
- * url:     post /auth/password/reset
- * header:  X-CSRF-Token : [token]
- * params:
+ * @api {post} /auth/password/reset Reset Verification
+ * @apiGroup Auth
+ * @apiPermission None
+ * @apiQuery {string} t tenant ID
+ * @apiQuery {string} a auth token
+ * @apiSuccess (302) redirect redirect to login page
  */
 const authLogger = require("../../lib/authLogger.js");
 

@@ -1,6 +1,6 @@
 /**
  * appbuilder/model-post-batch.js
- * Perform a Create operation on a batch of data managed by a specified
+ * @apiDescription Perform a Create operation on a batch of data managed by a specified
  * ABObject. This returns a fully populated row value of the newly created
  * entry.
  *
@@ -9,10 +9,14 @@
  * Our return data references this .id to update the client with the results
  * for that entry.
  *
- * url:     post /app_builder/model/:objID/batch
- * header:  X-CSRF-Token : [token]
- * return:  { data: { id: rowEntry }, errors:{ id: error } }
- * params:
+ * @api {post} /app_builder/model/:objID/batch Model Create Batch
+ * @apiGroup AppBuilder
+ * @apiParam {string} objID uuid of the ABObject to add to
+ * @apiBody {array} batch records to add
+ * @apiUse successRes
+ * @apiSuccess (200) {object} data
+ * @apiSuccess (200) {object} data.data entries that added successfully `{ id: rowEntry }`
+ * @apiSuccess (200) {object} data.errors entries that could not be saved `{ id: error }`
  */
 var inputParams = {
    objID: { string: { uuid: true }, required: true },

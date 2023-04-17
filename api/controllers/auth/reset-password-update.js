@@ -1,10 +1,11 @@
 /**
  * auth/reset-password-update.js
  *
- *
- * url:     post /auth/password/reset
- * header:  X-CSRF-Token : [token]
- * params:
+ * @api {post} /auth/password/reset Set Password
+ * @apiGroup Auth
+ * @apiPermission User
+ * @apiUse password
+ * @apiUse successRes
  */
 
 var inputParams = {

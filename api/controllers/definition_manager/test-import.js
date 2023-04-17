@@ -1,10 +1,12 @@
 /**
  * definition_manager/test-import.js
+ * @apiDescription Import definitions from a file already on the server.
  *
- *
- * url:     post /test/import
- * header:  X-CSRF-Token : [token]
- * params:
+ * @api {post} /test/import Import
+ * @apiGroup Test
+ * @apiPermission User
+ * @apiBody {string} file path to the file on the server
+ * @apiUse resDone
  */
 var fs = require("fs");
 var path = require("path");

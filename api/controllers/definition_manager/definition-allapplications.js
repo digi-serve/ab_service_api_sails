@@ -2,17 +2,11 @@
  * definition_manager/definition-allapplications.js
  *
  *
- * url:     get /definition/allapplications
- * header:  X-CSRF-Token : [token]
- * params:
+ * @api {get} /definition/allapplications All Applications
+ * @apiGroup Definition
+ * @apiPermission Builder
+ * @apiSuccess (200) {json} definitions
  */
-
-var inputParams = {
-   /*    "email": { string:{ email: { allowUnicode: true }}, required:true }   */
-   /*                -> NOTE: put .string  before .required                    */
-   /*    "param": { required: true } // NOTE: param Joi.any().required();      */
-   /*    "param": { optional: true } // NOTE: param Joi.any().optional();      */
-};
 
 // make sure our BasePath is created:
 module.exports = function (req, res) {

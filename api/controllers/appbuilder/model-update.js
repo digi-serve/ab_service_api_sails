@@ -1,12 +1,16 @@
 /**
  * appbuilder/model-update.js
- * Perform an Update operation on the data managed by a specified ABObject.
+ * @apiDescription Perform an Update operation on the data managed by a specified ABObject.
  * This returns a fully populated row value of the newly created entry.
  *
- * url:     put /app_builder/model/:objID/:ID
- * header:  X-CSRF-Token : [token]
- * return:  { rowValue }
- * params:
+ * @api {put} /app_builder/model/:objID/:id Model Update
+ * @apiGroup AppBuilder
+ * @apiPermission User
+ * @apiUse objID
+ * @apiParam {string} ID uuid of the record
+ * @apiBody {any} ...params any values to update, based on the ABObject's columns
+ * @apiUse successRes
+ * @apiSuccess (200) {object} data row value
  */
 var inputParams = {
    objID: { string: true, required: true },

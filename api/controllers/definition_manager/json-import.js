@@ -1,12 +1,12 @@
 /**
  * definition_manager/json-import.js
+ * @apiDescription Import definitions from an uploaded json file
  *
- *
- * url:      /definition/import
- * header:  X-CSRF-Token : [token]
- * params:
+ * @api {POST} /definition/import Import
+ * @apiGroup Definition
+ * @apiPermission Builder
+ * @apiUse resDone
  */
-
 const fs = require("fs");
 
 // var inputParams = {

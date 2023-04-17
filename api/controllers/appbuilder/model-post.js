@@ -1,12 +1,14 @@
 /**
  * appbuilder/model-post.js
- * Perform a Create operation on the data managed by a specified ABObject.
+ * @apiDescription Perform a Create operation on the data managed by a specified ABObject.
  * This returns a fully populated row value of the newly created entry.
  *
- * url:     post /app_builder/model/:objID
- * header:  X-CSRF-Token : [token]
- * return:  { rowValue }
- * params:
+ * @api {post} /app_builder/model/:objID Model Create
+ * @apiGroup AppBuilder
+ * @apiPermission User
+ * @apiUse successRes
+ * @apiSuccess (200) {object} data populated row value of the newly created entry
+ * @apiUse objID
  */
 var inputParams = {
    objID: { string: { uuid: true }, required: true },

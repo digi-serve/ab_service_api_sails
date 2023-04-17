@@ -1,14 +1,18 @@
 /**
  * appbuilder/model-get.js
- * Perform a Count operation on the data managed by a specified ABObject.
+ * @apiDescription Perform a Count operation on the data managed by a specified ABObject.
  * This returns a count of all the matching rows specified by the
- * {where} parameter.
- *
- * url:     get /app_builder/model/:objID
- * header:  X-CSRF-Token : [token]
- * return:  {obj} { count: {integer} }
- * params:
+ * `{where}` parameter.
+ * @api {get} /app_builder/model/:objID/count Model Count
+ * @apiGroup AppBuilder
+ * @apiPermission User
+ * @apiUse objID
+ * @apiQuery {object} where filter conditions to apply before counting
+ * @apiUse successRes
+ * @apiSuccess (200) {object} data
+ * @apiSuccess (200) {number} data.count count of all the matching rows
  */
+
 var inputParams = {
    objID: { string: true, required: true },
    where: { object: true, optional: true },

@@ -2,9 +2,12 @@
  * definition_manager/export-app.js
  *
  *
- * url:     get /definition/export/:ID
- * header:  X-CSRF-Token : [token]
- * params:
+ * @api {get} /definition/export/:ID Export App
+ * @apiGroup Definition
+ * @apiPermission Builder
+ * @apiParam {string} ID uuid of the ABApplication
+ * @apiUse download
+ * @apiUse exportRes
  */
 
 var inputParams = {

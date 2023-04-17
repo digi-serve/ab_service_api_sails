@@ -2,9 +2,11 @@
  * process_manager/timer-start.js
  *
  *
- * url:     put /process/timer/:ID/start
- * header:  X-CSRF-Token : [token]
- * params:
+ * @api {put} /process/timer/:ID/start Timer Start
+ * @apiGroup Process
+ * @apiPermission Builder
+ * @apiUse timerID
+ * @apiUse successRes
  */
 
 var inputParams = {
@@ -34,11 +36,15 @@ module.exports = function (req, res) {
    };
 
    // pass the request off to the uService:
-   req.ab.serviceRequest("process_manager.timer-start", jobData, (err, results) => {
-      if (err) {
-         res.ab.error(err);
-         return;
+   req.ab.serviceRequest(
+      "process_manager.timer-start",
+      jobData,
+      (err, results) => {
+         if (err) {
+            res.ab.error(err);
+            return;
+         }
+         res.ab.success(results);
       }
-      res.ab.success(results);
-   });
+   );
 };

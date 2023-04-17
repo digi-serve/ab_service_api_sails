@@ -6,6 +6,13 @@
  * header:  X-CSRF-Token : [token]
  * params:
  */
+/**
+ * @api {get} /appbuilder/csv-export/:viewID CSV Export
+ * @apiGroup AppBuilder
+ * @apiPermission User
+ * @apiParam {string} viewID
+ * @apiQuery {string} [where]
+ */
 
 var inputParams = {
    viewID: { string: true, required: true },

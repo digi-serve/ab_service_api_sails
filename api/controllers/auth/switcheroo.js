@@ -1,11 +1,14 @@
 /**
  * auth/switcheroo.js
- * Validate a request to switcheroo to another user.
+ * @apiDescription Validate a request to switcheroo to another user.
  *
- * url:     post /auth/switcheroo/:userID
- * header:  X-CSRF-Token : [token]
- * return:  { user }
- * params:
+ * @api {post} /auth/switcheroo/:userID Switcheroo
+ * @apiGroup Auth
+ * @apiPermission Switcheroo
+ * @apiParam {string} userID user to switch to
+ * @apiUse successRes
+ * @apiSuccess (200) {object} data
+ * @apiSuccess (200) {string} data.switcherooID user switched to
  */
 var inputParams = {
    userID: { string: true, required: true },

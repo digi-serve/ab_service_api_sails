@@ -1,10 +1,13 @@
 /**
  * definition_manager/test-reset.js
+ * @apiDescription Broadcast to other services that they need to update definitions.
+ * Useful when we've made a change in the DB directly.
  *
- *
- * url:     post /test/reset
- * header:  X-CSRF-Token : [token]
- * params:
+ * @api {post} /test/reset Reset
+ * @apiGroup Test
+ * @apiPermission None
+ * @apiBody {string} tenant tenant key
+ * @apiUse resDone
  */
 
 // var inputParams = {

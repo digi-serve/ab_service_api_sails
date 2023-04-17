@@ -1,13 +1,15 @@
 /**
  * appbuilder/model-update-batch.js
- * Perform an Update operation on a batch of data managed by a specified
- * ABObject. This returns a fully populated row value of the newly created
- * entry.
+ * @apiDescription Perform an Update operation on a batch of data managed by a specified
+ * ABObject.
  *
- * url:     put /app_builder/model/:objID/:ID/batch
- * header:  X-CSRF-Token : [token]
- * return:  true
- * params:
+ * @api {put} /app_builder/batch/model/:objID Model Update Batch
+ * @apiGroup AppBuilder
+ * @apiPermission User
+ * @apiUse objID
+ * @apiBody {string[]} rowIds uuids of the records to update
+ * @apiBody {object} values values to update
+ * @apiUse resTrue
  */
 var inputParams = {
    objID: { string: true, required: true },

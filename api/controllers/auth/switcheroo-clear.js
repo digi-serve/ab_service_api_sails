@@ -1,11 +1,13 @@
 /**
  * auth/switcherooClear.js
- * Remove a switcheroo assignment.
+ * @apiDescription Remove a switcheroo assignment.
  *
- * url:     delete /auth/switcheroo
- * header:  X-CSRF-Token : [token]
- * return:  { user }
- * params:
+ * @api {delete} /auth/switcheroo Switcheroo Clear
+ * @apiGroup Auth
+ * @apiPermission None
+ * @apiUse successRes
+ * @apiSuccess (200) {object} data
+ * @apiSuccess (200) {boolean} data.success `true`
  */
 
 module.exports = function (req, res) {

@@ -2,9 +2,13 @@
  * process_manager/timer-status.js
  *
  *
- * url:     get /process/timer/:ID
- * header:  X-CSRF-Token : [token]
- * params:
+ * @api {get} /process/timer/:ID Timer Status
+ * @apiGroup Process
+ * @apiPermission Builder
+ * @apiUse timerID
+ * @apiUse successRes
+ * @apiSuccess (200) { object } data
+ * @apiSuccess (200) { boolean } data.isRunning
  */
 
 var inputParams = {
@@ -34,11 +38,15 @@ module.exports = function (req, res) {
    };
 
    // pass the request off to the uService:
-   req.ab.serviceRequest("process_manager.timer-status", jobData, (err, results) => {
-      if (err) {
-         res.ab.error(err);
-         return;
+   req.ab.serviceRequest(
+      "process_manager.timer-status",
+      jobData,
+      (err, results) => {
+         if (err) {
+            res.ab.error(err);
+            return;
+         }
+         res.ab.success(results);
       }
-      res.ab.success(results);
-   });
+   );
 };

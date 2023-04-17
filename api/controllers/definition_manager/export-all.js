@@ -2,9 +2,11 @@
  * definition_manager/export-all.js
  *
  *
- * url:     get /definition/export/all
- * header:  X-CSRF-Token : [token]
- * params:
+ * @api {get} /definition/export/all Export All
+ * @apiGroup Definition
+ * @apiPermission Builder
+ * @apiUse download
+ * @apiUse exportRes
  */
 
 var inputParams = {

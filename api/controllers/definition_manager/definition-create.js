@@ -2,9 +2,15 @@
  * definition_manager/definition-create.js
  *
  *
- * url:     post /definition/create
- * header:  X-CSRF-Token : [token]
- * params:
+ * @api {post} /definition/create Create
+ * @apiGroup Definition
+ * @apiPermission Builder
+ * @apiBody {string} id a uuid
+ * @apiBody {string} name
+ * @apiBody {string} type
+ * @apiBody {string} json
+ * @apiUse successRes
+ * @apiSuccess (200) {object} data complete definition
  */
 
 var inputParams = {

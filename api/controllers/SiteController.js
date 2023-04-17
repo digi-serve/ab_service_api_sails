@@ -11,7 +11,6 @@ module.exports = {
    //    console.log("!!!! LabelMissing !!!!");
    //    res.ab.success({ done: true });
    // },
-
    index: function (req, res) {
       // NGinx well send index.html from /home, but we go through sails for Authentication
       return res.redirect("/home");
@@ -317,7 +316,7 @@ module.exports = {
                      site: configSite,
                      tenant: configTenant,
                      user: configUser,
-                     userReal: req.ab.isSwitcherood()? req.ab.userReal : 0,
+                     userReal: req.ab.isSwitcherood() ? req.ab.userReal : 0,
                      meta: configMeta,
                      settings,
                   });
