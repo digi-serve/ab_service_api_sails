@@ -134,6 +134,7 @@ module.exports.routes = {
       "definition_manager/tenants-update-application",
 
    // process_manager routes:
+   "get /process/inbox": "process_manager/inbox-find",
    "post /process/inbox/register": "process_manager/inbox-register",
    "put /process/inbox/:ID": "process_manager/inbox-update",
    "post /process/inbox/meta": "process_manager/inbox-meta",
