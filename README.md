@@ -46,6 +46,7 @@ ___
   - [Missing Label](#Missing-Label)
 - [Process](#Process)
   - [External Done](#External-Done)
+  - [Inbox Find](#Inbox-Find)
   - [Inbox Metadata](#Inbox-Metadata)
   - [Inbox Register](#Inbox-Register)
   - [Inbox Update](#Inbox-Update)
@@ -775,6 +776,24 @@ ___
 
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
+| status | `string` | <p><code>&quot;success&quot;</code></p> |
+  
+<a name='Inbox-Find'></a>
+### Inbox Find - `GET` /process/inbox/
+[Back to top](#top)
+
+
+<p>Get the inbox tasks for the current user</p>
+
+**Permission:** `User`
+\- Any authenticated user
+#### Responses
+
+##### Success response - `200`
+
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| data | `Object[]` | <p>process tasks</p> |
 | status | `string` | <p><code>&quot;success&quot;</code></p> |
   
 <a name='Inbox-Metadata'></a>

@@ -1,11 +1,12 @@
 /**
- * process_manager/inbox-update.js
- * @apiDescription Complete an proces task from the inbox
+ * process_manager/inbox-find.js
+ * @apiDescription Get the inbox tasks for the current user
  *
  * @api {get} /process/inbox/ Inbox Find
  * @apiGroup Process
  * @apiPermission User
  * @apiUse successRes
+ * @apiSuccess (200) {Object[]} data process tasks
  */
 
 var inputParams = {};
