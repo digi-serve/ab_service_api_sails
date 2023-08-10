@@ -39,6 +39,7 @@ ___
   - [User Applications](#User-Applications)
 - [File](#File)
   - [Get a File](#Get-a-File)
+  - [Get a File as base64](#Get-a-File-as-base64)
   - [Upload](#Upload)
 - [Log](#Log)
   - [Find](#Find)
@@ -656,6 +657,28 @@ ___
 | Name     | Type       | Description                           |
 |----------|------------|---------------------------------------|
 | url | `redirect` | <p>to the file</p> |
+  
+<a name='Get-a-File-as-base64'></a>
+### Get a File as base64 - `GET` /file/:ID/base64
+[Back to top](#top)
+
+
+**Permission:** `User`
+\- Any authenticated user
+#### Parameters
+| Name     | Type       | Location    |  Description            |
+|----------|------------|-------------|-------------------------|
+| ID | `string` | route | <p>file uuid</p> |
+| mobile | `boolean` | query | <p>whether to reutrn downscaled images for mobile</p> |
+#### Responses
+
+##### Success response - `200`
+
+| Name     | Type       | Description                           |
+|----------|------------|---------------------------------------|
+| data | `Object` |  |
+| data.image | `string` | <p>base64</p> |
+| status | `string` | <p><code>&quot;success&quot;</code></p> |
   
 <a name='Upload'></a>
 ### Upload - `POST` /file/upload/:objID/:fieldID
