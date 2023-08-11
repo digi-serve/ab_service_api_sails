@@ -14,7 +14,7 @@
 
 var inputParams = {
    ID: { string: { uuid: true }, required: true },
-   mobile: { boolean: true },
+   mobile: { boolean: true, optional: true },
 };
 
 module.exports = async function (req, res) {
