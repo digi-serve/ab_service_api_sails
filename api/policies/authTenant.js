@@ -12,7 +12,7 @@ function isNumeric(n) {
    return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
-const URL = require("url");
+// const URL = require("url");
 
 module.exports = (req, res, next) => {
    // there are several ways a Tenant can be specified:
@@ -76,9 +76,16 @@ module.exports = (req, res, next) => {
          next();
          return;
       }
-      
+
+      if (prefix == "localhost") {
+         req.ab.log("authTenant -> req from localhost -> use admin tenant");
+         req.ab.tenantID = "admin";
+         next();
+         return;
+      }
+
       // should we try to perform a lookup by the prefix?
-      if (prefix != "localhost" && !isNumeric(prefix)) {
+      if (!isNumeric(prefix)) {
          req.ab.log(`authTenant -> tenant_manager.find(${prefix})`);
 
          var jobData = {
@@ -90,7 +97,7 @@ module.exports = (req, res, next) => {
             jobData,
             (err, results) => {
                if (err) {
-                  next(err);
+                  res.notFound(err);
                   return;
                }
                if (results && results.uuid) {
@@ -104,19 +111,22 @@ module.exports = (req, res, next) => {
 
                   // be sure to set the session:
                   // req.session.tenant_id = req.ab.tenantID;
-               }
 
-               next();
+                  next();
+                  return;
+               }
+               res.notFound(`We couldn't find the tenant '${prefix}'.`);
+               return;
             }
          );
       } else {
          req.ab.log("authTenant -> no valid tenant options");
          // no Tenant ID known for this request
-         // just keep going:
-         next();
+         res.notFound(`We couldn't find a valid tenant.`);
+         return;
       }
    } else {
       req.ab.log("No hostname??");
-      next();
+      res.notFound(`We couldn't find a valid tenant.`);
    }
 };
