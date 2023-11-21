@@ -43,7 +43,8 @@ module.exports = (req, res, next) => {
    // Treat localhost as admin for development.
    if (
       process.env.NODE_ENV != "production" &&
-      (req.hostname == "localhost" || req.hostname == "127.0.0.1")
+      (req.hostname == "localhost" || req.hostname == "127.0.0.1") &&
+      !req.query.tenant
    ) {
       req.ab.log("authTenant -> req from localhost -> use admin tenant");
       req.ab.tenantID = "admin";
@@ -72,6 +73,9 @@ module.exports = (req, res, next) => {
       var prefix = parts.shift();
 
       //// DEV TESTING:
+      if (process.env.NODE_ENV == "development" && req.query.tenant) {
+         prefix = req.query.tenant;
+      }
       //// uncomment the initConfig.js && index.ejs entries for these values
       //// to test url prefix route resolutions:
       // if (req.headers && req.headers["tenant-test-prefix"]) {
