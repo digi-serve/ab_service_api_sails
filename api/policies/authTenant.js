@@ -40,6 +40,17 @@ module.exports = (req, res, next) => {
       return;
    }
 
+   // Treat localhost as admin for development.
+   if (
+      process.env.NODE_ENV != "production" &&
+      (req.hostname == "localhost" || req.hostname == "127.0.0.1")
+   ) {
+      req.ab.log("authTenant -> req from localhost -> use admin tenant");
+      req.ab.tenantID = "admin";
+      next();
+      return;
+   }
+
    // - url: prefix :  http://fcf.baseurl.org
    //   once we resolve the url prefix, we will store the tenant id in the
    //   session.
@@ -73,13 +84,6 @@ module.exports = (req, res, next) => {
          req.ab.tenantID = hashLookup[prefix];
          // be sure to set the session:
          // req.session.tenant_id = req.ab.tenantID;
-         next();
-         return;
-      }
-
-      if (prefix == "localhost") {
-         req.ab.log("authTenant -> req from localhost -> use admin tenant");
-         req.ab.tenantID = "admin";
          next();
          return;
       }
