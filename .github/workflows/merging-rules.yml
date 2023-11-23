@@ -11,7 +11,7 @@ permissions:
 jobs:
    call-e2e-tests:
       name: E2E Tests
-      uses: digi-serve/.github/.github/workflows/cypress-e2e-tests.yml@master
+      uses: digi-serve/.github/.github/workflows/cypress-e2e-tests.yml@nh/debug 
    call-dependabot-merge:
       name: Dependabot
       needs: call-e2e-tests
