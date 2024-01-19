@@ -277,6 +277,10 @@ module.exports = {
        *                                                                          *
        ***************************************************************************/
       trustProxy: true,
+      // Enable compression plugin during testing, to better mimic production
+      middleware: {
+         compress: require("compression")(),
+      },
    },
 
    /**************************************************************************
