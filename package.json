@@ -30,7 +30,7 @@
     "shortid": "^2.2.15"
   },
   "devDependencies": {
-    "apidoc-markdown": "^7.2.5",
+    "apidoc-markdown": "^7.3.2",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.7.0",
     "eslint-config-prettier": "^8.3.0",
