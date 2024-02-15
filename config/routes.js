@@ -69,6 +69,7 @@ module.exports.routes = {
    "get /file/:ID": "file_processor/file-get",
    "get /file/:ID/base64": "file_processor/file-base64",
    "post /image/upload/:isWebix": "file_processor/image-upload",
+   "put /image/rotate/:ID": "file_processor/image-rotate",
 
    /***************************************************************************
     *                                                                          *
@@ -167,4 +168,10 @@ module.exports.routes = {
    "get /mobile/app/:tenantID/:ID/manifest.json": "mobile/manifest",
    "get /mobile/app/:tenantID/:ID": "mobile/app",
    "get /mobile/qr/:ID": "mobile/qr",
+
+   // just testing our config-site :
+   "get /config/preloader": "SiteController.preloader",
+   "get /config/site": "SiteController.configSite",
+   "get /config/user": "SiteController.configUser",
+   "get /config/inbox": "SiteController.configInbox",
 };

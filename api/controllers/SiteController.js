@@ -5,6 +5,76 @@
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
 const async = require("async");
+const Cache = require("../lib/cacheManager");
+// const AB = require("@digiserve/ab-utils");
+// const ReqAB = AB.reqApi({}, {}, {});
+// ReqAB.jobID = "api_cache_buster";
+// ReqAB.serviceResponder("api_sails.site-cache-stale", (req, cb) => {
+//    // Respond to warnings that our cached site configuration information is
+//    // no longer valid.
+
+//    // Things that breaks the cache:
+//    //    language
+//    //    tenants
+//    //    users
+//    //    scopes
+//    //    roles
+
+//    let tenantID = req.tenantID;
+
+//    console.log(":::::");
+//    console.log(`::::: site.cache.stale received for tenant[${tenantID}]`);
+//    console.log(":::::");
+
+//    if (tenantID == "all") {
+//       CachePreloaderSite = {};
+//       CachePreloaderSiteVersion = {};
+//    } else {
+//       delete CachePreloaderSite[tenantID];
+//       delete CachePreloaderSiteVersion[tenantID];
+//    }
+//    cb(null);
+// });
+
+// ReqAB.serviceResponder("api_sails.user-cache-stale", (req, cb) => {
+//    // Respond to warnings that our cached site configuration information is
+//    // no longer valid.
+
+//    let userUUID = req.param("userUUID");
+
+//    console.log(":::::");
+//    console.log(
+//       `::::: user.cache.stale received for tenant[${req.tenantID}]->user[${userUUID}]`
+//    );
+//    console.log(":::::");
+
+//    delete CachePreloaderUserVersion[req.tenantID][userUUID];
+//    cb(null);
+// });
+
+// var CachePreloaderSite = {
+//    /* tenantID: { ConfigSite }, */
+// };
+
+// var CachePreloaderSiteVersion = {
+//    /* tenantID : "CurrentSiteConfigHash" */
+// };
+
+// var CachePreloaderUserVersion = {
+//    /* tenantID : {  user.uuid : "CurrentUserConfigHash" } */
+// };
+
+function UserSimple(req) {
+   let sUser = {};
+
+   Object.keys(req.ab.user).forEach((k) => {
+      if (k.indexOf("__relation") > -1) return;
+      if (k.indexOf("AB") == 0) return;
+      if (k.indexOf("SITE") == 0) return;
+      sUser[k] = req.ab.user[k];
+   });
+   return sUser;
+}
 
 module.exports = {
    // labelMissing: function (req, res) {
@@ -30,6 +100,141 @@ module.exports = {
       console.log("/favicon.ico : resolving to :" + url);
       res.redirect(url);
    },
+
+   configInbox: async function (req, res) {
+      var configInbox = null;
+      // {array} [ {ABDefinition}, {ABDefinition}, ...]
+      // The list of ABxxxx definitions to send to the Web client to create
+      // the applications to display.
+
+      var configInboxMeta = null;
+      // {array} [ { appData}, ...]
+      // Inbox items need a minimum set of Application / Process data to
+      // display correctly.  It is possible a User might have an Inbox Item
+      // related to an Application they do not have Rights to access, so we
+      // need to send this data along with the configuration data.
+
+      let user = req.ab.user;
+
+      var jobData = {
+         users: [user.username],
+         roles: user.SITE_ROLE || [],
+      };
+
+      // pass the request off to the uService:
+      await new Promise((done, error) => {
+         req.ab.serviceRequest(
+            "process_manager.inbox.find",
+            jobData,
+            (err, results) => {
+               if (err) {
+                  req.ab.log("error inbox.find:", err);
+                  error(err);
+                  return;
+               }
+               configInbox = results;
+               // done();
+               // now ask for the inbox Meta data
+               var ids = results.map((r) => r.definition).filter((r) => r);
+               req.ab.serviceRequest(
+                  "process_manager.inbox.meta",
+                  { ids },
+                  (err, meta) => {
+                     if (err) {
+                        req.ab.log("error inbox.meta:", err);
+                        error(err);
+                        return;
+                     }
+                     configInboxMeta = meta;
+                     done();
+                  }
+               );
+            }
+         );
+      });
+
+      res.ab.success({
+         inbox: configInbox,
+         inboxMeta: configInboxMeta,
+      });
+   },
+
+   configSite: async function (req, res) {
+      let config = Cache.PreloaderSite(req.ab.tenantID);
+      if (!config) {
+         await new Promise((resolve) => {
+            req.ab.serviceRequest(
+               "tenant_manager.config-site",
+               { relay: sails.config.relay?.enable ?? false },
+               {
+                  stringResult: true,
+               },
+               (err, result) => {
+                  if (err) {
+                     return res.ab.error(err);
+                  }
+
+                  config = result;
+                  Cache.PreloaderSite(req.ab.tenantID, config);
+                  resolve();
+               }
+            );
+         });
+      }
+
+      // Send as JS
+      res.set("Content-Type", "text/javascript");
+      // Cache for 1 year (if definitons are changed this will be requested
+      // with a new hash in the query param).
+      res.set("Cache-Control", "max-age=31536000");
+      res.send(`window.__AB_Config=${config}`);
+   },
+
+   configUser: async function (req, res) {
+      let user = null;
+      if (req.ab.user) {
+         // simplify the user data:
+         let userSimple = UserSimple(req);
+
+         var jobData = {
+            user: userSimple,
+         };
+         await new Promise((resolve) => {
+            req.ab.serviceRequest(
+               "user_manager.config",
+               jobData,
+               {
+                  stringResult: true,
+               },
+               (err, results) => {
+                  if (err) {
+                     return res.ab.error(err);
+                  }
+
+                  user = results;
+                  resolve();
+               }
+            );
+         });
+      }
+      // Send as JS
+      res.set("Content-Type", "text/javascript");
+      // Cache for 1 year (if definitons are changed this will be requested
+      // with a new hash in the query param).
+      res.set("Cache-Control", "max-age=31536000");
+      res.send(`window.__AB_Config_User=${user}`);
+   },
+
+   // configUserReal: function (req, res) {
+   //    let results = req.ab.isSwitcherood() ? req.ab.userReal : 0;
+
+   //    // Send as JS
+   //    res.set("Content-Type", "text/javascript");
+   //    // Cache for 1 year (if definitons are changed this will be requested
+   //    // with a new hash in the query param).
+   //    // res.set("Cache-Control", "max-age=31536000");
+   //    res.send(`window.__AB_Config_User_Real=${results}`);
+   // },
 
    /*
     * get /config
@@ -77,8 +282,8 @@ module.exports = {
       //    .id : {uuid}
       //    .options: {obj} Configuration Details for the current Tenant's
       //              operation.
-      //     ??   .authType: {string}
-      //     ??   .networkType: {string} the type of Network access to the server
+      //    .options.authType: {string}
+      //    .options.networkType: {string} the type of Network access to the server
       //    .title: {string}
       //    .clickTextToEnter: {string}
 
@@ -121,13 +326,7 @@ module.exports = {
                }
 
                // simplify the user data:
-               let userSimple = {};
-               Object.keys(req.ab.user).forEach((k) => {
-                  if (k.indexOf("__relation") > -1) return;
-                  if (k.indexOf("AB") == 0) return;
-                  if (k.indexOf("SITE") == 0) return;
-                  userSimple[k] = req.ab.user[k];
-               });
+               let userSimple = UserSimple(req);
 
                var jobData = {
                   user: userSimple,
@@ -364,4 +563,151 @@ module.exports = {
       res.send("plugin request: login first");
       // res.ab.error(new Error("no tenant set. Login first."));
    },
+
+   preloader: async function (req, res) {
+      let tenantID = req.ab.tenantSet() //Tenant set from policies
+         ? req.ab.tenantID
+         : "notKnown";
+
+      let allLookups = [];
+
+      let configSiteVersion;
+      allLookups.push(
+         cachedLookupSiteVersion(req).then((version) => {
+            configSiteVersion = version;
+         })
+      );
+
+      let configUserVersion;
+      let configMyAppsVersion;
+      if (!req.ab.user) {
+         // if we are not logged in: we don't need to perform lookups:
+         configUserVersion = "unknown";
+         configMyAppsVersion = "unknown";
+      } else {
+         allLookups.push(
+            cachedLookupUserVersion(req).then((version) => {
+               configUserVersion = version;
+            })
+         );
+
+         if (req.ab.isSwitcherood()) {
+            // should be a unique enough to bust the cache
+            configMyAppsVersion = req.ab.jobID;
+         } else {
+            allLookups.push(
+               lookupMyAppVersion(req).then((version) => {
+                  configMyAppsVersion = version;
+               })
+            );
+         }
+      }
+
+      let configUserRealData = req.ab.isSwitcherood() ? req.ab.userReal : 0;
+
+      // @TODO: we still haven't setup a way to assign Plugins to Roles.
+      // So for now we are manually adding ABDesigner.js.
+      // only add if they have 1 of our Builder Related Roles:
+
+      let pluginList = [];
+      const builderRoles = [
+         "6cc04894-a61b-4fb5-b3e5-b8c3f78bd331",
+         "e1be4d22-1d00-4c34-b205-ef84b8334b19",
+      ];
+      let roles = req.ab.user?.SITE_ROLE ?? [];
+      if (roles.filter((r) => builderRoles.indexOf(r.uuid) > -1).length > 0) {
+         pluginList.push("/assets/tenant/default/ABDesigner.js");
+      }
+
+      if (pluginList.length == 0) {
+         pluginList = "";
+      } else {
+         pluginList = `"${pluginList.join('","')}"`;
+      }
+
+      await Promise.all(allLookups);
+
+      res.view("web_preloader.ejs", {
+         layout: false,
+         tenantID,
+         configUserRealData,
+         configSiteVersion,
+         configUserVersion,
+         configMyAppsVersion,
+         pluginList,
+      });
+   },
 };
+
+async function cachedLookup(req, Hash, keyHash, jobData, keyRequest) {
+   if (!Hash[keyHash]) {
+      await new Promise((resolve, reject) => {
+         req.ab.serviceRequest(keyRequest, jobData, (err, results) => {
+            if (err) {
+               req.ab.log("error:", err);
+               reject(err);
+               return;
+            }
+
+            Hash[keyHash] = results;
+            resolve();
+         });
+      });
+   }
+
+   return Hash[keyHash];
+}
+
+async function cachedLookupSiteVersion(req) {
+   let tenantID = req.ab.tenantSet() //Tenant set from policies
+      ? req.ab.tenantID
+      : "notKnown";
+
+   return await cachedLookup(
+      req,
+      Cache.PreloaderSiteVersion(),
+      tenantID,
+      {},
+      "tenant_manager.config-site-version"
+   );
+}
+
+async function cachedLookupUserVersion(req) {
+   let tenantID = req.ab.tenantSet() //Tenant set from policies
+      ? req.ab.tenantID
+      : "notKnown";
+
+   let CachePreloaderUserVersion = Cache.PreloaderUserVersion();
+   CachePreloaderUserVersion[tenantID] =
+      CachePreloaderUserVersion[tenantID] || {};
+   let UserCache = CachePreloaderUserVersion[tenantID];
+
+   return await cachedLookup(
+      req,
+      UserCache,
+      req.ab.user?.uuid || "unknown",
+      { user: req.ab.user },
+      "user_manager.config-user-version"
+   );
+}
+
+async function lookupMyAppVersion(req) {
+   let version;
+   await new Promise((resolve, reject) => {
+      req.ab.serviceRequest(
+         "definition_manager.definitions-check-update",
+         {},
+         (err, results) => {
+            if (err) {
+               req.ab.log("error:", err);
+               reject(err);
+               return;
+            }
+
+            version = results;
+            resolve();
+         }
+      );
+   });
+   return version;
+}

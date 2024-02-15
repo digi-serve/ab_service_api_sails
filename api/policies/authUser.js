@@ -25,6 +25,8 @@ const authLogger = require(__dirname + "/../lib/authLogger.js");
 const AB = require("@digiserve/ab-utils");
 const passport = require("passport");
 
+const Cache = require("../lib/cacheManager");
+
 // B. Initializing during Sails.js bootstrap
 // (Global `sails` object is not yet defined)
 // @see api/hooks/initPassport.js
@@ -133,6 +135,14 @@ const isUserKnown = (req, res, next) => {
 
    // User is already authenticated
    if (key) {
+      let cachedUser = Cache.AuthUser(req.ab.tenantID, userID);
+      if (cachedUser) {
+         req.ab.user = cachedUser;
+         req.ab.log(`authUser -> cached user.`);
+         next(null, cachedUser);
+         return true;
+      }
+
       // make sure we have a Promise that will resolve to
       // the user created for this userID
       if (!commonRequest[key]) {
@@ -148,6 +158,7 @@ const isUserKnown = (req, res, next) => {
       commonRequest[key]
          .then((user) => {
             req.ab.user = user;
+            Cache.AuthUser(req.ab.tenantID, userID, user);
 
             if (commonRequest[key]) {
                req.ab.log(

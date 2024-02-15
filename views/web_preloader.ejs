@@ -1,0 +1,56 @@
+
+
+window.__AB_Config_User_Real=<%- configUserRealData %>
+// Setup the REAL User if switcherood():
+
+window.__AB_Plugins = [];
+// {array} our loaded plugins are stored here until Bootstrap
+// can pull them in.
+
+
+async function ScriptLoad(url) {
+   await new Promise((resolve, reject) => {
+      var cb = () => resolve();
+      // Adding the script tag to the head as suggested before
+      const head = document.head;
+      const script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = url;
+
+      // Then bind the event to the callback function.
+      // There are several events for cross browser compatibility.
+      script.onreadystatechange = cb;
+      script.onload = cb;
+      script.onerror = () => {
+         reject(
+            new Error(`Preloader:ScriptLoad(): Error loading script (${url})`)
+         );
+      };
+      // Fire the loading
+      head.appendChild(script);
+   });
+}
+
+async function Preload() {
+
+   let allScripts = [];
+
+   allScripts.push(ScriptLoad("/config/site?v=<%- configSiteVersion %>"));
+   allScripts.push(ScriptLoad("/config/user?v=<%- configUserVersion %>"));
+   // allScripts.push(ScriptLoad("/config/user/real"));
+   allScripts.push(ScriptLoad("/definition/myapps?v=<%- configMyAppsVersion %>"));
+
+   let plugins = [ <%- pluginList %> ];
+   plugins.forEach((p) => {
+      allScripts.push(ScriptLoad(p));
+   })
+
+
+   await Promise.all(allScripts);
+
+   // wait for the socket.io library to be ready, then we are good to go:
+   await window.__AB_socketReady;
+
+   window.__AB_preload_resolve();
+}
+Preload();

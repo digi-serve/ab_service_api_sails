@@ -12,7 +12,7 @@ function isNumeric(n) {
    return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
-// const URL = require("url");
+const URL = require("node:url");
 
 module.exports = (req, res, next) => {
    // there are several ways a Tenant can be specified:
@@ -41,9 +41,12 @@ module.exports = (req, res, next) => {
    }
 
    // Treat localhost as admin for development.
+   // #Fix: situations where websocket doesn't set req.hostname but does have
+   // req.url
+   const hostname = req.hostname || URL.parse(req.url).hostname;
    if (
       process.env.NODE_ENV != "production" &&
-      (req.hostname == "localhost" || req.hostname == "127.0.0.1") &&
+      (hostname == "localhost" || hostname == "127.0.0.1") &&
       !req.query.tenant
    ) {
       req.ab.log("authTenant -> req from localhost -> use admin tenant");
@@ -55,7 +58,7 @@ module.exports = (req, res, next) => {
    // - url: prefix :  http://fcf.baseurl.org
    //   once we resolve the url prefix, we will store the tenant id in the
    //   session.
-   var urlHostname = req.headers["x-forwarded-host"] || req.hostname;
+   var urlHostname = req.headers["x-forwarded-host"] || hostname;
 
    // if we are proxied by NGINX:
    if (urlHostname == "api_sails") {
@@ -73,6 +76,7 @@ module.exports = (req, res, next) => {
       var prefix = parts.shift();
 
       //// DEV TESTING:
+      // http://localhost:8080/home?tenant={targetTenant.key}
       if (process.env.NODE_ENV == "development" && req.query.tenant) {
          prefix = req.query.tenant;
       }
@@ -92,7 +96,10 @@ module.exports = (req, res, next) => {
          return;
       }
 
-      // should we try to perform a lookup by the prefix?
+      // lookup tenant by the prefix
+      // NOTE: if this is a production site, we don't accept
+      // https://188.xxx.xxx.xxx:port/route requests.  They HAVE to specify the
+      // text url: https://{tenant.key}.site.com/{route}
       if (!isNumeric(prefix)) {
          req.ab.log(`authTenant -> tenant_manager.find(${prefix})`);
 

@@ -64,11 +64,6 @@ module.exports = function (req, res) {
    const file = req.ab.param("file");
    // {string}
    // this will contain the uploaded file
-
-   var serviceResponse;
-   // {obj}
-   // our response back from the file_processor.file-base64-upload service
-
    async.series(
       [
          // 1) check if the file is oversized
@@ -90,7 +85,7 @@ module.exports = function (req, res) {
          },
 
          // 3) pass the job to the client
-         (next) => {
+         () => {
             var jobData = {
                fileID,
                object: objID,
@@ -106,21 +101,18 @@ module.exports = function (req, res) {
                "file_processor.file-base64-upload",
                jobData,
                (err, results) => {
-                  serviceResponse = results;
-                  next(err);
+                  if (err != null) {
+                     req.ab.log(
+                        "api_sails:file_processor:file-base64-upload: error",
+                        err
+                     );
+                     res.ab.error(err);
+                     return;
+                  }
+
+                  res.ab.success(results);
                }
             );
-         },
-
-         // 3) package response to the client
-         (next) => {
-            // simplify response to .uuid only
-            var data = {
-               uuid: serviceResponse.uuid,
-            };
-
-            res.ab.success(data);
-            next();
          },
       ],
       (err /*, results */) => {

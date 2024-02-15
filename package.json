@@ -1,7 +1,7 @@
 {
   "name": "app",
   "private": true,
-  "version": "1.1.1",
+  "version": "1.2.1",
   "description": "a Sails application",
   "keywords": [],
   "dependencies": {
@@ -25,7 +25,7 @@
     "sails-hook-orm": "^4.0.0",
     "sails-hook-sockets": "^2.0.0",
     "sails-mysql": "^2.0.0",
-    "semver": "^7.5.4",
+    "semver": "^7.6.0",
     "shelljs": "^0.8.4",
     "shortid": "^2.2.15"
   },
