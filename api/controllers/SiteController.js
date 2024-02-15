@@ -627,6 +627,7 @@ module.exports = {
 
       await Promise.all(allLookups);
 
+      res.type("text/javascript");
       res.view("web_preloader.ejs", {
          layout: false,
          tenantID,
