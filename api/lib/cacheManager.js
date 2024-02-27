@@ -12,7 +12,7 @@ ReqAB.serviceResponder("api_sails.site-cache-stale", (req, cb) => {
    //    scopes
    //    roles
 
-   let tenantID = req.tenantID;
+   let tenantID = req.param("tenantID") ?? req.tenantID;
 
    console.log(":::::");
    console.log(`::::: site.cache.stale received for tenant[${tenantID}]`);
