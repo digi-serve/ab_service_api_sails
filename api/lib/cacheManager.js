@@ -32,16 +32,21 @@ ReqAB.serviceResponder("api_sails.user-cache-stale", (req, cb) => {
    // Respond to warnings that our cached site configuration information is
    // no longer valid.
 
-   let userUUID = req.param("userUUID");
+   /** @type {string} */
+   const userUUID = req.param("userUUID");
 
    console.log(":::::");
    console.log(
       `::::: user.cache.stale received for tenant[${req.tenantID}]->user[${userUUID}]`
    );
    console.log(":::::");
-
-   delete CacheAuthUser?.[req.tenantID]?.[userUUID];
-   delete CachePreloaderUserVersion?.[req.tenantID]?.[userUUID];
+   if (userUUID === "all") {
+      CacheAuthUser[req.tenantID] = {};
+      CachePreloaderUserVersion[req.tenantID] = {};
+   } else {
+      delete CacheAuthUser?.[req.tenantID]?.[userUUID];
+      delete CachePreloaderUserVersion?.[req.tenantID]?.[userUUID];
+   }
    cb(null);
 });
 
