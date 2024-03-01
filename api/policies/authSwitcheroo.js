@@ -4,35 +4,37 @@
  * we will impersonate that person for the remaining process.
  *
  */
-
-module.exports = function (req, res, next) {
-   req.ab.log(
-      `Checking Switcheroo : ${req.session.switcherooID || "no switcheroo"}`
-   );
+const Cache = require("../lib/cacheManager");
+module.exports = async function (req, res, next) {
+   const switcherooID = req.session.switcherooID;
+   req.ab.log(`Checking Switcheroo : ${switcherooID || "no switcheroo"}`);
 
    // if no switcheroo session ID has been set, then just continue:
-   if (!req.session.switcherooID) {
+   if (!switcherooID) {
       next();
       return;
    }
+   try {
+      let switchUser = Cache.AuthUser(req.ab.tenantID, switcherooID);
+      if (!switchUser) {
+         switchUser = await req.ab.serviceRequest("user_manager.user-find", {
+            uuid: switcherooID,
+         });
 
-   req.ab.serviceRequest(
-      "user_manager.user-find",
-      { uuid: req.session.switcherooID },
-      (err, user) => {
-         if (err) {
-            // unable to find registered user
-            // clear out our switcherooID settings
-            // and continue as normal
-            delete req.session.switcherooID;
-            next();
-            return;
+         if (!switchUser) {
+            throw new Error("No user returned from user-find");
          }
-
-         //
-         req.ab.log("switcheroo user", user);
-         req.ab.switcherooToUser(user);
-         next();
       }
-   );
+      req.ab.log("switcheroo user", switchUser);
+      req.ab.switcherooToUser(switchUser);
+      next();
+      return;
+   } catch (err) {
+      req.ab.notify("developer", err, {
+         context: "authSwitcheroo: error switching to user",
+         switcherooID,
+      });
+      delete req.session.switcherooID;
+      next();
+   }
 };
