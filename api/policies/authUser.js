@@ -19,6 +19,11 @@
 const passport = require("passport");
 
 module.exports = async (req, res, next) => {
+   // Passport 6.0 expect session to have regenerate() which sails doesn't have
+   // see: https://github.com/jaredhanson/passport/issues/904
+   if (req.session && !req.session.regenerate) {
+      req.session.regenerate = (cb) => cb();
+   }
    // If this req is from a signed-in user (via local, okta, or cas)
    // they will be authenticated by session
    passport.session()(req, res, () => {
