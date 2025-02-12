@@ -33,13 +33,32 @@
     <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
     <link rel="icon" href="/mobile/app/<%= appID %>/favicon.png" />
     <link rel="manifest" href="/mobile/app/<%= tenantID %>/<%= appID %>/manifest.json" />
-    <script type='text/javascript'>
-      Window.__ab_config=<%- config %>;
-      Window.__ab_definitions=<%- definitions %>;
-    </script>
+    <script> 
+
+         //
+         // Setup some promises used during our boot up process.
+         //
+
+         // .__AB_preload  {Promise} our index.js script will await this 
+         // before continuing the Bootstrap.init();  This way all resources will
+         // be loaded before we start the initialization.
+         window.__AB_preload = new Promise((resolve) => {
+            window.__AB_preload_resolve = resolve;
+         });
+
+         // window.__AB_socketReady = new Promise((resolve) => {
+         //    window.__AB_socketReady_resolve = resolve;
+         // });
+
+         window.__ab_config = {};
+         // {json}
+         // a place holder for the incoming configuration settings loaded
+         // during the preloader script.
+      </script>
+      <script type='text/javascript' src='/mobile/preloader/<%= tenantID %>/<%= appID %>' defer></script>  
     <!-- built styles file will be auto injected -->
   </head>
   <body>
     <div id="app" appbuilder-tenant="<%= tenantID %>" ></div>
-  <script defer src="/assets/mobile/mobile_runtime.js"></script><script defer src="/assets/mobile/mobile_vendors.js"></script><script defer src="/assets/mobile/mobile_app.js"></script></body>
+  </body>
 </html>

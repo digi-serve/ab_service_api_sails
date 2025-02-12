@@ -567,6 +567,17 @@ module.exports = {
          pluginList.push("/assets/tenant/default/ABDesigner.js");
       }
 
+      const hrPluginTenants = [
+         // "admin", // <-- For local testing only
+         "1ad43361-d1da-47ac-9ee4-5e5bc6af512c",
+         "1729957e-d3ba-4cd4-901c-aa17982b9766",
+      ];
+
+      if (hrPluginTenants.includes(req.ab.tenantID)) {
+         console.log("Loading HR Teams Plugin");
+         pluginList.push(`/assets/tenant/default/HRTeams.js`);
+      }
+
       if (pluginList.length == 0) {
          pluginList = "";
       } else {

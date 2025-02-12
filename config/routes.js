@@ -172,6 +172,14 @@ module.exports.routes = {
    "get /mobile/app/:tenantID/:ID/manifest.json": "mobile/manifest",
    "get /mobile/app/:tenantID/:ID": "mobile/app",
    "get /mobile/qr/:ID": "mobile/qr",
+   "get /mobile/preloader/:tenantID/:appID": "mobile/preloader",
+   "get /mobile/definitions/:ID": "mobile/app-defs",
+   "get /mobile/config/settings/:appID": "mobile/config-settings",
+   "get /mobile/config/labels": "mobile/config-labels",
+   "get /mobile/config/languages": "mobile/config-languages",
+   "get /mobile/config/user": "mobile/config-user",
+   "get /mobile/config/meta": "mobile/config-meta",
+   "get /mobile/config/tenants": "mobile/config-tenants",
 
    // just testing our config-site :
    "get /config/preloader": "SiteController.preloader",

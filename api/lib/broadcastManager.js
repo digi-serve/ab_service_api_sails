@@ -76,7 +76,16 @@ ReqAB.serviceResponder("api.broadcast", (req, cb) => {
       };
 
       // pull the Sockets from the main d.room
-      let RoomSockets = sails.io.sockets.in(d.room);
+      // let RoomSockets = sails.io.sockets.in(d.room); // THIS retrieves ALL client sockets.
+      // console.log(
+      //    `NUMBER OF SOCKETS: ${Object.keys(RoomSockets.sockets).length} ${
+      //       d.event
+      //    } ${d.room}`
+      // );
+      let RoomSockets = sails.io.sockets.adapter.rooms?.[d.room] ?? {
+         sockets: {},
+      };
+
       Object.keys(RoomSockets.sockets).forEach((id) => {
          socketList[id] = RoomSockets.sockets[id];
       });

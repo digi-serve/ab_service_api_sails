@@ -2,14 +2,13 @@
  * mobile/app.js
  * @apiDescription Respond with the index.html of the Mobile PWA
  *
- * @api {get} /mobile/app/:appID App
+ * @api {get} /mobile/app/:tenantID/:appID
+ * @apiParam {string} tenantID
  * @apiParam {string} appID
  * @apiGroup Mobile
  * @apiPermission None
  * @apiSuccess (200) {HTML} html
  */
-const async = require("async");
-
 // var inputParams = {
 //    tenant: { string: true, optional: true },
 // };
@@ -21,68 +20,9 @@ module.exports = function (req, res) {
    let appID = req.ab.param("ID");
    let tenantID = req.ab.tenantID;
 
-   let config = null;
-   let definitions = null;
-
-   // create a new job for the service
-   let jobData = {
-      ID: appID,
-   };
-
-   async.parallel(
-      [
-         (done) => {
-            // pass the request off to the uService:
-            req.ab.serviceRequest(
-               "definition_manager.mobile-config",
-               jobData,
-               { stringResult: true },
-               // stringResult: true reduces the work of parsing the data
-               // and then restringifying it back into the res.view()
-               // configData here will be the stringify() version of the data
-               (err, configData) => {
-                  if (err) {
-                     done(err);
-                     return;
-                  }
-                  config = configData;
-                  done();
-               }
-            );
-         },
-         (done) => {
-            // pass the request off to the uService:
-            req.ab.serviceRequest(
-               "definition_manager.definitions-app",
-               jobData,
-               { stringResult: true },
-               // stringResult: true reduces the work of parsing the data
-               // and then restringifying it back into the res.view()
-               // definitionData here will be the stringify() version of the data
-               (err, definitionData) => {
-                  if (err) {
-                     done(err);
-                     return;
-                  }
-                  definitions = definitionData;
-                  done();
-               }
-            );
-         },
-      ],
-      (err) => {
-         if (err) {
-            res.ab.error(err, 500);
-            return;
-         }
-
-         res.view("mobile_pwa.ejs", {
-            layout: false,
-            appID,
-            tenantID,
-            config,
-            definitions,
-         });
-      }
-   );
+   res.view("mobile_pwa.ejs", {
+      layout: false,
+      appID,
+      tenantID,
+   });
 };
