@@ -63,14 +63,19 @@ module.exports = function (req, res) {
       }
    });
 
-   req.ab.serviceRequest("appbuilder.model-post", jobData, (err, newItem) => {
-      BroadcastManager.unregister(req);
-      if (err) {
-         req.ab.log("api_sails:model-post:error:", err);
-         res.ab.error(err);
-         return;
-      }
+   req.ab.serviceRequest(
+      "appbuilder.model-post",
+      jobData,
+      { stringResult: true }, // prevent JSON.parse()ing the results
+      (err, newItem) => {
+         BroadcastManager.unregister(req);
+         if (err) {
+            req.ab.log("api_sails:model-post:error:", err);
+            res.ab.error(err);
+            return;
+         }
 
-      res.ab.success(newItem);
-   });
+         res.ab.success(newItem);
+      }
+   );
 };
