@@ -10,7 +10,8 @@ module.exports = (req, res, next) => {
    req.session = req.session || {};
    req.ab = AB.reqApi(req, res, sails.config);
    res.ab = AB.resApi(req, res);
+   const jobID = req.param("jobID");
+   jobID && (req.ab.jobID = jobID);
    req.ab.log(`${req.method} ${req.path}`);
-
    next();
 };

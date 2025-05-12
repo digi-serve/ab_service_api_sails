@@ -50,6 +50,7 @@ var inputParams = {
    //// For API Object: to pull data from the URL
    isAPI: { optional: true },
    url: { optional: true },
+   jobID: { string: true, optional: true },
 };
 
 const BroadcastManager = require("../../lib/broadcastManager");
@@ -135,6 +136,7 @@ module.exports = function (req, res) {
             res.ab.error(err);
             return;
          }
+         results.jobID = req.ab.jobID;
          res.ab.success(results);
       }
    );
