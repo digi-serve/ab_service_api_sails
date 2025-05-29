@@ -6,6 +6,9 @@
  */
 const async = require("async");
 const Cache = require("../lib/cacheManager");
+const path = require("node:path");
+
+const { version } = require(path.join(process.cwd(), "package.json"));
 
 function UserSimple(req) {
    let sUser = {};
@@ -478,6 +481,14 @@ module.exports = {
                });
          }
       );
+   },
+
+   /*
+    * get /monitors/lb
+    * return status 200 (and version number) if the server is up.
+    */
+   dataDog: function (req, res) {
+      res.status(200).send(`v${version}`);
    },
 
    /*

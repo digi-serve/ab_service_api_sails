@@ -202,4 +202,7 @@ module.exports.routes = {
    "get /netsuite/metadata": "appbuilder/netsuite-metadata-catalog",
    "get /netsuite/table/:ID": "appbuilder/netsuite-table-fields",
    "get /netsuite/dataverify/:table": "appbuilder/netsuite-data-verify",
+
+   // Cru Global DataDog /monitors/lb
+   "get /monitors/lb": "SiteController.dataDog",
 };
