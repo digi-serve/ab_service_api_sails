@@ -68,13 +68,18 @@ module.exports = function (req, res) {
       }
    });
 
-   req.ab.serviceRequest("appbuilder.model-update", jobData, (err, results) => {
-      if (err) {
-         req.ab.log("Error in model-update : ", err);
-         res.ab.error(err);
-         return;
-      }
+   req.ab.serviceRequest(
+      "appbuilder.model-update",
+      jobData,
+      { stringResult: true }, // prevent JSON.parse()ing the results
+      (err, results) => {
+         if (err) {
+            req.ab.log("Error in model-update : ", err);
+            res.ab.error(err);
+            return;
+         }
 
-      res.ab.success(results);
-   });
+         res.ab.success(results);
+      }
+   );
 };

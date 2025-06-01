@@ -114,7 +114,10 @@ module.exports = function (req, res) {
       BroadcastManager.register(req);
    }
 
-   const options = {};
+   const options = {
+      stringResult: true,
+      // as a performance improvement, prevent JSON.parse()ing the results
+   };
    // if populate == true, then this might take longer, so mark this as a
    // longRequest
    // NOTE: only do this on a generic populate = true.  those can end up
