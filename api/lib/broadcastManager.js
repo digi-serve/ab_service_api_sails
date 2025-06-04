@@ -31,6 +31,11 @@ const CurrentUserRequests = {
 };
 // Keep track of the currently active req objects that are awaiting a broadcast-register
 
+const CurrentSocketUsers = {
+   /* socket.id : username */
+};
+// keep track of which user in the system is related to a socket
+
 var broadcastRequiredFields = ["room", "event", "data"];
 // {array[string]}
 // a list of required fields each of our broadcast packets need to have.
@@ -104,8 +109,46 @@ ReqAB.serviceResponder("api.broadcast", (req, cb) => {
          });
       }
 
-      // now step through the socketList and send each of them a message:
+      let socketListLength = Object.keys(socketList).length;
+
+      // It is possible for a client to have > 1 socket connection. We only
+      // want to send 1 message to a client, so let's try to resolve socket.id
+      // to users, and then just send to each user:
+
+      let userList = {
+         /* userID : socket.id */
+         "*": [], // "*" is a catch all for sockets that don't resolve to users
+      };
       Object.keys(socketList).forEach((id) => {
+         let user = CurrentSocketUsers[id];
+         if (user) {
+            // TODO: verify socketList[id] is still connected and valid before
+            userList[user] = id; // just replace with the last one
+         } else {
+            userList["*"].push(id);
+         }
+      });
+
+      let reducedSocketList = {};
+      Object.keys(userList).forEach((user) => {
+         if (user != "*") {
+            let id = userList[user];
+            reducedSocketList[id] = socketList[id];
+         }
+      });
+      userList["*"].forEach((id) => {
+         reducedSocketList[id] = socketList[id];
+      });
+
+      let reducedSocketListLength = Object.keys(reducedSocketList).length;
+      if (reducedSocketListLength < socketListLength) {
+         req.log(
+            `::::: BroadcastManager:  reducedSocketList length: ${socketListLength} -> ${reducedSocketListLength}`
+         );
+      }
+
+      // now step through the reducedSocketList and send each of them a message:
+      Object.keys(reducedSocketList).forEach((id) => {
          // Log to Prometheus server
          MetricManager.logSocketPayload({
             event: d.event,
@@ -181,6 +224,10 @@ module.exports = {
       CurrentUserRequests[user.username].c++;
       CurrentUserRequests[user.username].req = req;
       // req.ab.log(`1111111 Keys: ${Object.keys(CurrentUserRequests)}`);
+
+      // now connect the current user to their socket.id
+      let socketID = sails.sockets.getId(req);
+      CurrentSocketUsers[socketID] = user.username;
    },
 
    unregister: function (req) {
